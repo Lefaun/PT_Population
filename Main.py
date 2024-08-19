@@ -291,16 +291,114 @@ with col[1]:
         st.write("Análise de Regressão Linear")
         st.write(model.summary())
 
-#with col[2]:
-        st.markdown("#### Map & Heatmap")
+with col[2]:
+    st.markdown("#### Map & Heatmap")
+
+    st.altair_chart(make_heatmap(df_selected_year_sorted, 'year', 'states', 'population', selected_color_theme))
+
+    #st.write("Mapa Interativo")
+    #st.map(df_selected_year_sorted[['latitude', 'longitude']].rename(columns={"latitude": "lat", "longitude": "lon"}))
     
-        st.altair_chart(make_heatmap(df_selected_year_sorted, 'year', 'states', 'population', selected_color_theme))
-    
-        st.write("Mapa Interativo")
-        st.map(df_selected_year_sorted[['latitude', 'longitude']].rename(columns={"latitude": "lat", "longitude": "lon"}))
+    # Add an additional placeholder for potential future charts or information
+    placeholder_col2 = st.empty()
+
+    df = pd.DataFrame({
+            "Tempo": time_data,
+            "População": population_data,
+            "Nascimentos": births_data,
+            "Mortes": deaths_data
+          })
+
+        fig, ax = plt.subplots()
+        sns.lineplot(x='Tempo', y='População', data=df, ax=ax, label='População')
+        sns.lineplot(x='Tempo', y='Nascimentos', data=df, ax=ax, label='Nascimentos')
+        sns.lineplot(x='Tempo', y='Mortes', data=df, ax=ax, label='Mortes')
+
+        ax.set_title('Simulação de População ao Vivo')
+        ax.legend()
+
+        st.pyplot(fig)
         
-        # Add an additional placeholder for potential future charts or information
-        placeholder_col2 = st.empty()
+        time.sleep(1)  # Esperar um segundo antes de atualizar novamente
+
+        model = perform_regression(time_data, population_data)
+        st.write(model.summary())
+    
+        fig, ax = plt.subplots()
+        sns.regplot(x='Tempo', y='População', data=df, ax=ax, label='População', line_kws={"color":"r","alpha":0.7,"lw":2})
+
+        ax.set_title('Regressão Linear da População')
+        ax.legend()
+
+        st.pyplot(fig)
+
+            #######################################################################################
+    
+    #choropleth = make_choropleth(df_selected_year, 'states_code', 'population', selected_color_theme)
+    #st.plotly_chart(choropleth, use_container_width=True)
+    ################################################################################################3
+    heatmap = make_heatmap(df_reshaped, 'year', 'states', 'population', selected_color_theme)
+    st.altair_chart(heatmap, use_container_width=True)
+
+
+
+# Função para simular um segundo da população
+
+# Configuração da interface do Streamlit
+
+    
+
+with col[2]:
+    st.markdown('#### Top States')
+
+    st.dataframe(df_selected_year_sorted,
+                 column_order=("states", "population"),
+                 hide_index=True,
+                 width=None,
+                 column_config={
+                    "states": st.column_config.TextColumn(
+                        "States",
+                    ),
+                    "population": st.column_config.ProgressColumn(
+                        "Population",
+                        format="%f",
+                        min_value=0,
+                        max_value=max(df_selected_year_sorted.population),
+                     )}
+                 )
+    
+    with st.expander('About', expanded=True):
+        st.write('''
+            - Data: [Portugal. Census INE - Instituto Nacional de Estatística e PORDATA ](https://www.census.gov/data/datasets/time-series/demo/popest/2010s-state-total.html).
+            - :orange[**Nascimentos/Mortes**]: Demografia Nascimentos e Mortes por Ano atualizados ao segundo
+            - :orange[**População por Localidade**]: Percentagem da distribuição Geográfica por Localidade
+            ''')
+
+# Função para simular um segundo da população
+def simulate_population_step(population, birth_rate, death_rate):
+    births = np.random.poisson(birth_rate)
+    deaths = np.random.poisson(death_rate)
+    net_change = births - deaths
+    new_population = population + net_change
+    
+    return new_population, births, deaths
+
+# Função para calcular as estatísticas
+def compute_statistics(data):
+    mean = np.mean(data)
+    std_dev = np.std(data)
+    variance = np.var(data)
+    
+    return mean, std_dev, variance
+
+# Função para realizar a regressão linear
+def perform_regression(time, population):
+    X = sm.add_constant(time)
+    model = sm.OLS(population, X).fit()
+    return model
+
+# Configuração da interface do Streamlit
+#st.set_page_config(page_title="Simulação de População em Tempo Real", layout="wide")
 
 # Footer
 st.markdown("""
