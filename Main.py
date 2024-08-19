@@ -309,28 +309,28 @@ with col[2]:
             "Mortes": deaths_data
           })
 
-        fig, ax = plt.subplots()
-        sns.lineplot(x='Tempo', y='População', data=df, ax=ax, label='População')
-        sns.lineplot(x='Tempo', y='Nascimentos', data=df, ax=ax, label='Nascimentos')
-        sns.lineplot(x='Tempo', y='Mortes', data=df, ax=ax, label='Mortes')
+    fig, ax = plt.subplots()
+    sns.lineplot(x='Tempo', y='População', data=df, ax=ax, label='População')
+    sns.lineplot(x='Tempo', y='Nascimentos', data=df, ax=ax, label='Nascimentos')
+    sns.lineplot(x='Tempo', y='Mortes', data=df, ax=ax, label='Mortes')
 
-        ax.set_title('Simulação de População ao Vivo')
-        ax.legend()
+    ax.set_title('Simulação de População ao Vivo')
+    ax.legend()
 
-        st.pyplot(fig)
-        
-        time.sleep(1)  # Esperar um segundo antes de atualizar novamente
-
-        model = perform_regression(time_data, population_data)
-        st.write(model.summary())
+    st.pyplot(fig)
     
-        fig, ax = plt.subplots()
-        sns.regplot(x='Tempo', y='População', data=df, ax=ax, label='População', line_kws={"color":"r","alpha":0.7,"lw":2})
+    time.sleep(1)  # Esperar um segundo antes de atualizar novamente
 
-        ax.set_title('Regressão Linear da População')
-        ax.legend()
+    model = perform_regression(time_data, population_data)
+    st.write(model.summary())
 
-        st.pyplot(fig)
+    fig, ax = plt.subplots()
+    sns.regplot(x='Tempo', y='População', data=df, ax=ax, label='População', line_kws={"color":"r","alpha":0.7,"lw":2})
+
+    ax.set_title('Regressão Linear da População')
+    ax.legend()
+
+    st.pyplot(fig)
 
             #######################################################################################
     
