@@ -242,95 +242,134 @@ with col[1]:
     seconds = st.number_input("Duração da Simulação (segundos)", value=100, min_value=1)
     
     if st.button("Iniciar Simulação"):
-        time_data, population_data, births_data, deaths_data = [], [], [], []
+        time_data = []
+        population_data = []
+        births_data = []
+        deaths_data = []
+        births_Total = []
+        deaths_Total =[]
+        
         population = initial_population
-
+        
         placeholder = st.empty()
-
+    
         for second in range(seconds):
-            #population, births, deaths = simulate_population_step(pop 
-
-            # Simulate the population step
             population, births, deaths = simulate_population_step(population, birth_rate, death_rate)
             
-            # Append the results to lists
             time_data.append(second)
             population_data.append(population)
             births_data.append(births)
             deaths_data.append(deaths)
+            births_Total.append(birth_rate)
+            deaths_Total.append(death_rate)
+            Total_Nascimentos = sum(births_Total)
+            Total_Mortes = sum(deaths_Total)
+            #Totalidade += birth_rate
+            mean, std_dev, variance = compute_statistics(population_data)
             
-            # Update the simulation display
             with placeholder.container():
-                st.metric(label="População Atual", value=f"{population}")
-                st.metric(label="Nascimentos Totais", value=f"{sum(births_data)}")
-                st.metric(label="Mortes Totais", value=f"{sum(deaths_data)}")
-
-                # Line chart for population over time
-                population_chart = px.line(
-                    x=time_data, 
-                    y=population_data,
-                    labels={'x': 'Tempo (segundos)', 'y': 'População'},
-                    title="Evolução da População ao Longo do Tempo"
-                )
-                st.plotly_chart(population_chart, use_container_width=True)
-            
-            # Wait for one second before the next iteration
-            time.sleep(1)
-
-        # Once the simulation is complete, display final results
-        st.success(f"Simulação concluída! População final: {population}")
-
-        # Display statistical data
-        mean, std_dev, variance = compute_statistics(population_data)
-        st.write(f"Média da População: {mean:.2f}")
-        st.write(f"Desvio Padrão da População: {std_dev:.2f}")
-        st.write(f"Variância da População: {variance:.2f}")
-
-        # Perform and display regression analysis
-        model = perform_regression(time_data, population_data)
-        st.write("Análise de Regressão Linear")
-        st.write(model.summary())
-
-with col[2]:
-    st.markdown("#### Map & Heatmap")
-
-    st.altair_chart(make_heatmap(df_selected_year_sorted, 'year', 'states', 'population', selected_color_theme))
-
-    #st.write("Mapa Interativo")
-    #st.map(df_selected_year_sorted[['latitude', 'longitude']].rename(columns={"latitude": "lat", "longitude": "lon"}))
+                # KPIs
+                kpi1, kpi2, kpi3 = st.columns(3)
+                kpi1.metric(label="População Atual", value=int(population))
+                kpi2.metric(label="Nascimentos no último segundo", value=int(births))
+                kpi3.metric(label="Mortes no último segundo", value=int(deaths))
+     
+                kpi4, kpi5 = st.columns(2)
+                kpi4.metric(label="Total Nascimentos", value=int(Total_Nascimentos))
+                kpi5.metric(label="Total Mortes", value=int(Total_Mortes))
     
-    # Add an additional placeholder for potential future charts or information
-    placeholder_col2 = st.empty()
+                # Dados em DataFrame
+                df = pd.DataFrame({
+                    "Tempo": time_data,
+                    "População": population_data,
+                    "Nascimentos": births_data,
+                    "Mortes": deaths_data
+                })
+    
+                # Gráficos interativos
+                st.markdown("### Evolução da População")
+                st.line_chart(df[['Tempo', 'População']].set_index('Tempo'))
+    
+                st.markdown("### Nascimentos e Mortes")
+                st.area_chart(df[['Tempo', 'Nascimentos', 'Mortes']].set_index('Tempo'))
+    
+                st.markdown("### Dados Detalhados")
+                st.dataframe(df)
+    
+                # Estatísticas
+                st.write(f"Média da População: {mean}")
+                st.write(f"Desvio Padrão da População: {std_dev}")
+                st.write(f"Variância da População: {variance}")
+                #st.write(f"Total de Nascimento: {Totalidade}")
+                st.write(f"Total de Nascimento: {Total_Nascimentos}")
+                st.write(f"Total de Mortes: {Total_Mortes}")
+            time.sleep(1)  # Esperar um segundo antes de atualizar novamente
+    
+        model = perform_regression(time_data, population_data)
+        st.write(model.summary())
+        
+        st.markdown("### Regressão Linear da População")
+        df['Previsão'] = model.predict(sm.add_constant(time_data))
+        st.line_chart(df[['Tempo', 'População', 'Previsão']].set_index('Tempo'))
+    ###################################################################################
+    #st.title("Simulação de População com Atualizações ao Vivo")
 
-    df = pd.DataFrame({
+    #initial_population = st.number_input("População Inicial", value=1000, min_value=1)
+    #birth_rate = st.slider("Taxa de Nascimento (por segundo)", 0.0, 5.0, 1.0)
+    #death_rate = st.slider("Taxa de Mortalidade (por segundo)", 0.0, 5.0, 0.5)
+    #seconds = st.number_input("Duração da Simulação (segundos)", value=100, min_value=1)
+    
+    
+        population = initial_population
+        
+        #for second in range(seconds):
+            #population, births, deaths = simulate_population_step(population, birth_rate, death_rate)
+            
+            #time_data.append(second)
+            #population_data.append(population)
+            #births_data.append(births)
+            #deaths_data.append(deaths)
+        mean,  std_dev, variance = compute_statistics(population_data)
+            
+            #st.write(f"Tempo: {second + 1}s")
+            #st.write(f"População Atual: {population}")
+            #st.write(f"Nascimentos no último segundo: {births}")
+            #st.write(f"Mortes no último segundo: {deaths}")
+            #st.write(f"Média da População: {mean}")
+           # st.write(f"Moda da População: {mode}")
+            #st.write(f"Desvio Padrão da População: {std_dev}")
+            #st.write(f"Variância da População: {variance}")
+    
+        #Atualizar gráficos
+        df = pd.DataFrame({
             "Tempo": time_data,
             "População": population_data,
             "Nascimentos": births_data,
             "Mortes": deaths_data
           })
 
-    fig, ax = plt.subplots()
-    sns.lineplot(x='Tempo', y='População', data=df, ax=ax, label='População')
-    sns.lineplot(x='Tempo', y='Nascimentos', data=df, ax=ax, label='Nascimentos')
-    sns.lineplot(x='Tempo', y='Mortes', data=df, ax=ax, label='Mortes')
+        fig, ax = plt.subplots()
+        sns.lineplot(x='Tempo', y='População', data=df, ax=ax, label='População')
+        sns.lineplot(x='Tempo', y='Nascimentos', data=df, ax=ax, label='Nascimentos')
+        sns.lineplot(x='Tempo', y='Mortes', data=df, ax=ax, label='Mortes')
 
-    ax.set_title('Simulação de População ao Vivo')
-    ax.legend()
+        ax.set_title('Simulação de População ao Vivo')
+        ax.legend()
 
-    st.pyplot(fig)
+        st.pyplot(fig)
+        
+        time.sleep(1)  # Esperar um segundo antes de atualizar novamente
+
+        model = perform_regression(time_data, population_data)
+        st.write(model.summary())
     
-    time.sleep(1)  # Esperar um segundo antes de atualizar novamente
+        fig, ax = plt.subplots()
+        sns.regplot(x='Tempo', y='População', data=df, ax=ax, label='População', line_kws={"color":"r","alpha":0.7,"lw":2})
 
-    model = perform_regression(time_data, population_data)
-    st.write(model.summary())
+        ax.set_title('Regressão Linear da População')
+        ax.legend()
 
-    fig, ax = plt.subplots()
-    sns.regplot(x='Tempo', y='População', data=df, ax=ax, label='População', line_kws={"color":"r","alpha":0.7,"lw":2})
-
-    ax.set_title('Regressão Linear da População')
-    ax.legend()
-
-    st.pyplot(fig)
+        st.pyplot(fig)
 
             #######################################################################################
     
@@ -399,9 +438,3 @@ def perform_regression(time, population):
 
 # Configuração da interface do Streamlit
 #st.set_page_config(page_title="Simulação de População em Tempo Real", layout="wide")
-
-# Footer
-st.markdown("""
-    <hr style="border:1px solid gray"> </hr>
-    <p style="text-align: center;">Desenvolvido por <strong>Seu Nome</strong></p>
-    """, unsafe_allow_html=True)
