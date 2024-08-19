@@ -291,7 +291,7 @@ with col[1]:
         st.write("Análise de Regressão Linear")
         st.write(model.summary())
 
-with col[2]:
+#with col[2]:
     st.markdown("#### Map & Heatmap")
 
     st.altair_chart(make_heatmap(df_selected_year_sorted, 'year', 'states', 'population', selected_color_theme))
