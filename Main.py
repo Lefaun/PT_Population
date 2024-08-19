@@ -292,15 +292,15 @@ with col[1]:
         st.write(model.summary())
 
 #with col[2]:
-    st.markdown("#### Map & Heatmap")
-
-    st.altair_chart(make_heatmap(df_selected_year_sorted, 'year', 'states', 'population', selected_color_theme))
-
-    st.write("Mapa Interativo")
-    st.map(df_selected_year_sorted[['latitude', 'longitude']].rename(columns={"latitude": "lat", "longitude": "lon"}))
+        st.markdown("#### Map & Heatmap")
     
-    # Add an additional placeholder for potential future charts or information
-    placeholder_col2 = st.empty()
+        st.altair_chart(make_heatmap(df_selected_year_sorted, 'year', 'states', 'population', selected_color_theme))
+    
+        st.write("Mapa Interativo")
+        st.map(df_selected_year_sorted[['latitude', 'longitude']].rename(columns={"latitude": "lat", "longitude": "lon"}))
+        
+        # Add an additional placeholder for potential future charts or information
+        placeholder_col2 = st.empty()
 
 # Footer
 st.markdown("""
