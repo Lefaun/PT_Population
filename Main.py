@@ -190,7 +190,7 @@ with col[1]:
         placeholder = st.empty()
 
         for second in range(seconds):
-            population, births, deaths = simulate_population_step(pop 
+            #population, births, deaths = simulate_population_step(pop 
 
             # Simulate the population step
             population, births, deaths = simulate_population_step(population, birth_rate, death_rate)
