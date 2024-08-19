@@ -21,6 +21,55 @@ st.set_page_config(
 )
 
 alt.themes.enable("dark")
+#######################
+#CSS
+
+st.markdown("""
+<style>
+
+[data-testid="block-container"] {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 1rem;
+    padding-bottom: 0rem;
+    margin-bottom: -7rem;
+}
+
+[data-testid="stVerticalBlock"] {
+    padding-left: 0rem;
+    padding-right: 0rem;
+}
+
+[data-testid="stMetric"] {
+    background-color: #393939;
+    text-align: center;
+    padding: 15px 0;
+}
+
+[data-testid="stMetricLabel"] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+[data-testid="stMetricDeltaIcon-Up"] {
+    position: relative;
+    left: 38%;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+
+[data-testid="stMetricDeltaIcon-Down"] {
+    position: relative;
+    left: 38%;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 #######################
 # Load data
@@ -435,6 +484,14 @@ def perform_regression(time, population):
     X = sm.add_constant(time)
     model = sm.OLS(population, X).fit()
     return model
+
+
+# Footer
+st.markdown("""
+    <hr style="border:1px solid gray"> </hr>
+    <p style="text-align: center;">Desenvolvido por <strong>Paulo Ricardo Monteiro</strong></p>
+    """, unsafe_allow_html=True)
+
 
 # Configuração da interface do Streamlit
 #st.set_page_config(page_title="Simulação de População em Tempo Real", layout="wide")
