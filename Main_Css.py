@@ -5,6 +5,27 @@ import numpy as np
 import pandas as pd
 from scipy.stats import linregress
 
+st.markdown(
+    """
+    <style>
+    /* Make text larger on small screens */
+    @media (max-width: 600px) {
+        .stTextInput, .stNumberInput, .stSlider {
+            font-size: 1.2rem;
+        }
+        .stButton button {
+            font-size: 1.2rem;
+            padding: 10px;
+        }
+        .stPlotlyChart {
+            height: 300px;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # Função para simular o passo da população
 def simulate_population_step(population, birth_rate, death_rate):
     births = int(population * birth_rate)
