@@ -70,6 +70,27 @@ st.markdown("""
 
 </style>
 """, unsafe_allow_html=True)
+############## NWE CSS #############
+st.markdown(
+    """
+    <style>
+    /* Make text larger on small screens */
+    @media (max-width: 600px) {
+        .stTextInput, .stNumberInput, .stSlider {
+            font-size: 1.2rem;
+        }
+        .stButton button {
+            font-size: 1.2rem;
+            padding: 10px;
+        }
+        .stPlotlyChart {
+            height: 300px;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 #######################
 # Load data
