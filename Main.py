@@ -505,6 +505,7 @@ def perform_regression(time, population):
     X = sm.add_constant(time)
     model = sm.OLS(population, X).fit()
     return model
+d
 
 
 # Footer
